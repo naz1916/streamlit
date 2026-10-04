@@ -137,8 +137,6 @@ def load_onnx_model():
 
 if page == "About":
 
-    st.title("🥔 About the Project")
-
     st.title("Identification and Localization of Early and Late Blight-Affected Regions in Potato Leaves Using YOLOv26")
 
     st.divider()
