@@ -15,67 +15,6 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# DARK MODE CUSTOM STYLING
-st.markdown("""
-<style>
-    .stApp {
-        background-color: #0E1117;
-        color: #F1F5F9;
-    }
-
-    [data-testid="stSidebar"] {
-        background-color: #111827;
-        border-right: 1px solid #263244;
-    }
-
-    h1, h2, h3, h4 {
-        color: #F8FAFC !important;
-    }
-
-    p, label {
-        color: #CBD5E1;
-    }
-
-    [data-testid="stVerticalBlockBorderWrapper"] {
-        background-color: #161B26;
-        border-color: #263244;
-        border-radius: 12px;
-    }
-
-    .stButton > button {
-        background-color: #2563EB;
-        color: white;
-        border: none;
-        border-radius: 8px;
-    }
-
-    .stButton > button:hover {
-        background-color: #1D4ED8;
-        color: white;
-        border: 1px solid #60A5FA;
-    }
-
-    [data-testid="stMetric"] {
-        background-color: #161B26;
-        padding: 15px;
-        border: 1px solid #263244;
-        border-radius: 10px;
-    }
-
-    [data-testid="stFileUploader"] {
-        background-color: #161B26;
-        border-radius: 10px;
-    }
-
-    hr {
-        border-color: #334155;
-    }
-
-    [data-testid="stAlert"] {
-        border-radius: 10px;
-    }
-</style>
-""", unsafe_allow_html=True)
 
 # SIDEBAR NAVIGATION
 
