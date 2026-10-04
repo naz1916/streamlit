@@ -207,50 +207,40 @@ elif page == "Detection":
 
     if uploaded_file is not None:
 
-        try:
+    try:
+        image = Image.open(uploaded_file).convert("RGB")
 
-            image = Image.open(uploaded_file).convert("RGB")
-            img_array = np.array(image)
+        col1, col2 = st.columns(2)
 
-            col1, col2 = st.columns(2)
+        with col1:
+            st.subheader("Original Image")
+            st.image(image, use_container_width=True)
 
-            with col1:
+        with col2:
+            st.subheader("Segmentation Result")
 
-                st.subheader("Original Image")
-
-                st.image(
-                    image,
-                    use_container_width=True
+            with st.spinner("Analyzing potato leaf..."):
+                results = model.predict(
+                    source=image,        # PIL image, no NumPy conversion
+                    conf=confidence,
+                    imgsz=640,
+                    verbose=False
                 )
 
-            with col2:
+                first_result = results[0]
+                annotated_image = first_result.plot()   # returns BGR
 
-                st.subheader("Segmentation Result")
+                annotated_image_rgb = cv2.cvtColor(
+                    annotated_image,
+                    cv2.COLOR_BGR2RGB
+                )
 
-                with st.spinner("Analyzing potato leaf..."):
+                st.image(annotated_image_rgb, use_container_width=True)
 
-                    results = model.predict(
-                        source=img_array,
-                        conf=confidence,
-                        imgsz=640,
-                        verbose=False
-                    )
+        st.divider()
 
-                    first_result = results[0]
-
-                    annotated_image = first_result.plot()
-
-                    annotated_image_rgb = cv2.cvtColor(
-                        annotated_image,
-                        cv2.COLOR_BGR2RGB
-                    )
-
-                    st.image(
-                        annotated_image_rgb,
-                        use_container_width=True
-                    )
-
-            st.divider()
+    except Exception as e:
+        st.error(f"Error processing image: {e}")
 
             st.subheader("Prediction Summary")
 
