@@ -156,8 +156,6 @@ if page == "About":
 
 elif page == "Detection":
 
-    st.title("Potato Leaves Early and Late-Blight Detection")
-
     st.write(
         "Upload a potato leaf image to identify and localize "
         "potential early blight and late blight symptoms."
