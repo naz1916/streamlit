@@ -6,21 +6,16 @@ import cv2
 from PIL import Image
 from ultralytics import YOLO
 
-# --------------------------------------------------
-# 1. PAGE CONFIGURATION
-# --------------------------------------------------
+# PAGE CONFIGURATION
 
 st.set_page_config(
-    page_title="Potato Leaf Disease Segmentation",
+    page_title="Potato Leaves Early and Late-Blight detection",
     page_icon="🥔",
     layout="wide",
     initial_sidebar_state="expanded"
 )
 
-# --------------------------------------------------
-# 2. DARK MODE CUSTOM STYLING
-# --------------------------------------------------
-
+# DARK MODE CUSTOM STYLING
 st.markdown("""
 <style>
     .stApp {
@@ -82,14 +77,11 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# --------------------------------------------------
-# 3. SIDEBAR NAVIGATION
-# --------------------------------------------------
+# SIDEBAR NAVIGATION
 
 with st.sidebar:
 
-    st.title("🥔 PotatoSeg")
-    st.caption("Potato Leaf Disease Segmentation")
+    st.title("Potato Leaves Early and Late-Blight Detection")
 
     st.divider()
 
@@ -114,10 +106,7 @@ with st.sidebar:
     st.caption("Computer Vision Research Project")
     st.caption("YOLOv26 • Instance Segmentation")
 
-# --------------------------------------------------
-# 4. LOAD YOLO ONNX MODEL
-# --------------------------------------------------
-
+# LOAD YOLO ONNX MODEL
 MODEL_PATH = "best.onnx"
 
 # Paste your Google Drive file ID here.
