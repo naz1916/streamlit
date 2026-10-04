@@ -1,12 +1,13 @@
 import os
 import gdown
 import streamlit as st
-import numpy as np
 import cv2
-from PIL import Image
+from PIL import Image, ImageOps
 from ultralytics import YOLO
 
+# --------------------------------------------------
 # PAGE CONFIGURATION
+# --------------------------------------------------
 
 st.set_page_config(
     page_title="Potato Leaves Early and Late-Blight detection",
@@ -15,8 +16,9 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-
+# --------------------------------------------------
 # SIDEBAR NAVIGATION
+# --------------------------------------------------
 
 with st.sidebar:
 
@@ -45,10 +47,12 @@ with st.sidebar:
     st.caption("Computer Vision Research Project")
     st.caption("YOLOv26 • Instance Segmentation")
 
+# --------------------------------------------------
 # LOAD YOLO ONNX MODEL
+# --------------------------------------------------
+
 MODEL_PATH = "best.onnx"
 
-# Paste your Google Drive file ID here.
 # From a link like https://drive.google.com/file/d/<FILE_ID>/view
 # the file ID is the part between /d/ and /view.
 GDRIVE_FILE_ID = "1ylZsrPAODgABTvdORvePUuhVIlgdJLlT"
@@ -71,7 +75,7 @@ def load_onnx_model():
 
 
 # --------------------------------------------------
-# 5. ABOUT PAGE
+# ABOUT PAGE
 # --------------------------------------------------
 
 if page == "About":
@@ -86,9 +90,7 @@ if page == "About":
 
     with col1:
         with st.container(border=True):
-
             st.markdown("#### 🟡 Early Blight")
-
             st.write("""
             Early blight is a potato disease commonly associated
             with lesions that may exhibit concentric ring patterns
@@ -97,9 +99,7 @@ if page == "About":
 
     with col2:
         with st.container(border=True):
-
             st.markdown("#### 🟣 Late Blight")
-
             st.write("""
             Late blight can produce irregular, dark or
             water-soaked lesions on potato leaves, potentially
@@ -151,7 +151,7 @@ if page == "About":
     )
 
 # --------------------------------------------------
-# 6. DETECTION PAGE
+# DETECTION PAGE
 # --------------------------------------------------
 
 elif page == "Detection":
@@ -163,7 +163,6 @@ elif page == "Detection":
 
     st.divider()
 
-    # Confidence setting on Detection page
     st.subheader("Detection Settings")
 
     confidence = st.slider(
@@ -188,14 +187,11 @@ elif page == "Detection":
         model = load_onnx_model()
 
     except Exception as e:
-
         st.error(f"Error loading model: {e}")
-
         st.info(
             "Check that the Google Drive file ID is correct and the file "
             "is shared as 'Anyone with the link'."
         )
-
         st.stop()
 
     # Image uploader
@@ -207,40 +203,40 @@ elif page == "Detection":
 
     if uploaded_file is not None:
 
-    try:
-        image = Image.open(uploaded_file).convert("RGB")
+        try:
+            image = Image.open(uploaded_file)
+            image = ImageOps.exif_transpose(image)   # fix phone-photo rotation
+            image = image.convert("RGB")             # drop alpha / force 3 channels
 
-        col1, col2 = st.columns(2)
+            col1, col2 = st.columns(2)
 
-        with col1:
-            st.subheader("Original Image")
-            st.image(image, use_container_width=True)
+            with col1:
+                st.subheader("Original Image")
+                st.image(image, use_container_width=True)
 
-        with col2:
-            st.subheader("Segmentation Result")
+            with col2:
+                st.subheader("Segmentation Result")
 
-            with st.spinner("Analyzing potato leaf..."):
-                results = model.predict(
-                    source=image,        # PIL image, no NumPy conversion
-                    conf=confidence,
-                    imgsz=640,
-                    verbose=False
-                )
+                with st.spinner("Analyzing potato leaf..."):
+                    # Pass the PIL image directly (no NumPy RGB/BGR mix-up)
+                    results = model.predict(
+                        source=image,
+                        conf=confidence,
+                        imgsz=640,   # must match the size used in the ONNX export
+                        verbose=False
+                    )
 
-                first_result = results[0]
-                annotated_image = first_result.plot()   # returns BGR
+                    first_result = results[0]
+                    annotated_image = first_result.plot()   # returns BGR
 
-                annotated_image_rgb = cv2.cvtColor(
-                    annotated_image,
-                    cv2.COLOR_BGR2RGB
-                )
+                    annotated_image_rgb = cv2.cvtColor(
+                        annotated_image,
+                        cv2.COLOR_BGR2RGB
+                    )
 
-                st.image(annotated_image_rgb, use_container_width=True)
+                    st.image(annotated_image_rgb, use_container_width=True)
 
-        st.divider()
-
-    except Exception as e:
-        st.error(f"Error processing image: {e}")
+            st.divider()
 
             st.subheader("Prediction Summary")
 
@@ -256,31 +252,20 @@ elif page == "Detection":
                     "disease-affected region(s)."
                 )
 
-                # Prediction metrics
                 col1, col2 = st.columns(2)
 
                 with col1:
-
-                    st.metric(
-                        "Total Detected Regions",
-                        total_detections
-                    )
+                    st.metric("Total Detected Regions", total_detections)
 
                 with col2:
-
-                    st.metric(
-                        "Confidence Threshold",
-                        f"{confidence:.0%}"
-                    )
+                    st.metric("Confidence Threshold", f"{confidence:.0%}")
 
                 st.subheader("Detection Details")
 
                 for i, box in enumerate(first_result.boxes):
 
                     class_id = int(box.cls[0])
-
                     class_name = model.names[class_id]
-
                     conf = float(box.conf[0])
 
                     with st.container(border=True):
@@ -288,19 +273,11 @@ elif page == "Detection":
                         col1, col2 = st.columns([3, 1])
 
                         with col1:
-
                             st.markdown(f"**Region {i + 1}**")
-
-                            st.write(
-                                f"Predicted Class: {class_name}"
-                            )
+                            st.write(f"Predicted Class: {class_name}")
 
                         with col2:
-
-                            st.metric(
-                                "Confidence",
-                                f"{conf:.2%}"
-                            )
+                            st.metric("Confidence", f"{conf:.2%}")
 
             else:
 
@@ -317,13 +294,8 @@ elif page == "Detection":
             )
 
         except Exception as e:
-
-            st.error(
-                f"An error occurred during image processing: {e}"
-            )
+            st.error(f"An error occurred during image processing: {e}")
 
     else:
 
-        st.info(
-            "Please upload a potato leaf image to begin segmentation."
-        )
+        st.info("Please upload a potato leaf image to begin segmentation.")
