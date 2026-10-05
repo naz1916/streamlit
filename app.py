@@ -11,7 +11,6 @@ from ultralytics import YOLO
 
 st.set_page_config(
     page_title="Potato Leaves Early and Late-Blight detection",
-    page_icon="🥔",
     layout="wide",
     initial_sidebar_state="expanded"
 )
