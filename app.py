@@ -22,7 +22,7 @@ st.set_page_config(
 
 with st.sidebar:
 
-    st.title("Potato Leaves Early and Late-Blight Detection")
+    st.title("Identification and Localization of Early and Late Blight-Affected Regions in Potato Leaves Using YOLOv26")
 
     st.divider()
 
