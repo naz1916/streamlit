@@ -34,10 +34,10 @@ with st.sidebar:
 
     st.markdown("**Research Team**")
     for member in [
-        "Acampado, Carmelo Jose M.",
-        "Agustin, Jayson Lawrenz L.",
-        "Alfaro, Tricia Collene M.",
-        "Adel, Ma. Irene J.",
+        "Acampado, Carmelo",
+        "Agustin, Jayson",
+        "Alfaro, Tricia",
+        "Adel, Irene",
     ]:
         st.caption(member)
 
