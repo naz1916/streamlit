@@ -55,8 +55,7 @@ MODEL_PATH = "best.onnx"
 
 # From a link like https://drive.google.com/file/d/<FILE_ID>/view
 # the file ID is the part between /d/ and /view.
-GDRIVE_FILE_ID = "1ylZsrPAODgABTvdORvePUuhVIlgdJLlT"
-
+GDRIVE_FILE_ID = "1iZVEfjtvy1Y48A4Us0Fp6iHTcV7zmZSD"
 
 @st.cache_resource
 def load_onnx_model():
