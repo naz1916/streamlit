@@ -38,6 +38,7 @@ with st.sidebar:
         "Agustin, Jayson",
         "Alfaro, Tricia",
         "Adel, Irene",
+        "Dr. Comia",
     ]:
         st.caption(member)
 
